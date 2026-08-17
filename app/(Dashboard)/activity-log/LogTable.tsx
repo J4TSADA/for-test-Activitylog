@@ -59,7 +59,7 @@ export default function LogTable({ logs }: { logs: ActivityLog[] }) {
 
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
-          <tr style={{ background: '#f0f0f0', textAlign: 'left' }}>
+          <tr style={{ background: '#030303', textAlign: 'left' }}>
             <th style={CELL}>เวลา</th>
             <th style={CELL}>Entity</th>
             <th style={CELL}>Action</th>
