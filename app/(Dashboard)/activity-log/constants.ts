@@ -25,3 +25,6 @@ export const ACTION_STYLES: Record<
 };
 
 export const TOTAL_LOG_COUNT = 2451;
+
+/** จำนวนแถวต่อหน้า ครบเมื่อไหร่ค่อยขึ้นหน้าใหม่ */
+export const PAGE_SIZE = 20;

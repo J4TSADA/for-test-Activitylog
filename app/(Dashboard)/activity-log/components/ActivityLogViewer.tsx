@@ -7,6 +7,7 @@ import { LogTable } from './LogTable';
 import { PaginationFooter } from './PaginationFooter';
 import { DetailDrawer } from './DetailDrawer';
 import { buildSearchHaystack } from '../utils';
+import { PAGE_SIZE } from '../constants';
 import {
   EMPTY_FILTERS,
   type ActivityLog,
@@ -15,24 +16,26 @@ import {
 
 type ActivityLogViewerProps = {
   logs: ActivityLog[];
-  totalCount: number;
 };
 
-export function ActivityLogViewer({
-  logs,
-  totalCount,
-}: ActivityLogViewerProps) {
+export function ActivityLogViewer({ logs }: ActivityLogViewerProps) {
   const [filters, setFilters] = useState<ActivityLogFilters>(EMPTY_FILTERS);
   const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
+  const [page, setPage] = useState(1);
 
+  /** เปลี่ยนตัวกรองแล้วต้องกลับหน้า 1 ไม่งั้นค้างอยู่หน้าที่ไม่มีข้อมูล */
   const setFilter = <K extends keyof ActivityLogFilters>(
     key: K,
     value: ActivityLogFilters[K],
   ) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
+    setPage(1);
   };
 
-  const clearFilters = () => setFilters(EMPTY_FILTERS);
+  const clearFilters = () => {
+    setFilters(EMPTY_FILTERS);
+    setPage(1);
+  };
 
   const hasActiveFilters = Boolean(
     filters.search || filters.action || filters.entity,
@@ -49,9 +52,18 @@ export function ActivityLogViewer({
     });
   }, [logs, filters]);
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  /** กันหน้าเกินช่วง เผื่อข้อมูลหดลงหลังกรอง */
+  const safePage = Math.min(page, totalPages);
+
+  const paged = useMemo(
+    () => filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
+    [filtered, safePage],
+  );
+
   return (
     <div className="min-h-full bg-slate-50 text-slate-900">
-      <div className="mx-auto max-w-6xl px-6 py-8">
+      <div className="mx-auto max-w-[1600px] px-8 py-8">
         <PageHeader />
 
         <FilterBar
@@ -63,13 +75,16 @@ export function ActivityLogViewer({
 
         <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-white">
           <LogTable
-            logs={filtered}
+            logs={paged}
             onViewDetails={setSelectedLog}
             onClearFilters={clearFilters}
           />
           <PaginationFooter
-            resultCount={filtered.length}
-            totalCount={totalCount}
+            page={safePage}
+            pageSize={PAGE_SIZE}
+            totalFiltered={filtered.length}
+            onPrev={() => setPage((p) => Math.max(1, p - 1))}
+            onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
           />
         </div>
       </div>

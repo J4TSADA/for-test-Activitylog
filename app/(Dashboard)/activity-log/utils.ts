@@ -18,16 +18,17 @@ export function formatTimestamp(raw: string): string {
   const date = toDate(raw);
   if (!date) return '-';
 
-  const day = date.getUTCDate();
+  const day = String(date.getUTCDate()).padStart(2, '0');
   const month = date.toLocaleString('en-US', {
     month: 'short',
     timeZone: 'UTC',
   });
+  const year = date.getUTCFullYear();
   const hh = String(date.getUTCHours()).padStart(2, '0');
   const mm = String(date.getUTCMinutes()).padStart(2, '0');
   const ss = String(date.getUTCSeconds()).padStart(2, '0');
 
-  return `${day} ${month}, ${hh}:${mm}:${ss}`;
+  return `${day} ${month} ${year}, ${hh}:${mm}:${ss}`;
 }
 
 export function shortId(id: string): string {
