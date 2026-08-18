@@ -83,8 +83,9 @@ export function ActivityLogViewer({ logs }: ActivityLogViewerProps) {
             page={safePage}
             pageSize={PAGE_SIZE}
             totalFiltered={filtered.length}
-            onPrev={() => setPage((p) => Math.max(1, p - 1))}
-            onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+            onPageChange={(next) =>
+              setPage(Math.min(totalPages, Math.max(1, next)))
+            }
           />
         </div>
       </div>

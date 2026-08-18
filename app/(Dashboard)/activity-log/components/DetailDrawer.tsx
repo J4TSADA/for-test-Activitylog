@@ -4,7 +4,12 @@ import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { ActionBadge, ActorBadge } from './Badges';
 import { JsonBlock } from './JsonBlock';
-import { formatTimestamp, shortId, formatActor, parseMetadata } from '../utils';
+import {
+  formatTimestamp,
+  formatActor,
+  isActorUnknown,
+  parseMetadata,
+} from '../utils';
 import type { ActivityLog } from '../types';
 
 type DetailDrawerProps = {
@@ -62,16 +67,38 @@ export function DetailDrawer({ log, onClose }: DetailDrawerProps) {
             </Field>
             <Field label="ผู้ทำ">
               <div className="mt-1 flex items-center gap-1.5">
-                <p className="text-xs font-medium text-slate-700">
-                  {formatActor(log.user_id)}
+                <p
+                  className={`text-xs ${
+                    isActorUnknown(log.user_id, log.actor_type)
+                      ? 'italic text-slate-400'
+                      : 'font-medium text-slate-700'
+                  }`}
+                >
+                  {formatActor(log.user_id, log.actor_type)}
                 </p>
-                <ActorBadge actorType={log.actor_type} />
+                <ActorBadge
+                  actorType={log.actor_type}
+                  unknown={isActorUnknown(log.user_id, log.actor_type)}
+                />
               </div>
             </Field>
             <Field label="Entity">
               <p className="mt-1 text-xs text-slate-700">{log.entity}</p>
-              <p className="font-mono text-[11px] text-slate-400">
-                id: {shortId(log.entity_id)}
+            </Field>
+          </div>
+
+          <div className="mt-4">
+            <Field label="Entity ID">
+              <p className="mt-1 break-all font-mono text-xs text-slate-700">
+                {log.entity_id}
+              </p>
+            </Field>
+          </div>
+
+          <div className="mt-4">
+            <Field label="Description">
+              <p className="mt-1 break-words text-xs leading-relaxed text-slate-700">
+                {log.description}
               </p>
             </Field>
           </div>

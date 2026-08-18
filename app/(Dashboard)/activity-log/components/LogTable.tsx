@@ -1,9 +1,14 @@
 'use client';
 
-import { Braces } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { ActorBadge, ActionBadge } from './Badges';
 import { EmptyState } from './EmptyState';
-import { formatTimestamp, formatActor } from '../utils';
+import {
+  formatDatePart,
+  formatTimePart,
+  formatActor,
+  isActorUnknown,
+} from '../utils';
 import type { ActivityLog } from '../types';
 
 type LogTableProps = {
@@ -13,7 +18,7 @@ type LogTableProps = {
 };
 
 const TH =
-  'px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500';
+  'px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-600';
 
 export function LogTable({
   logs,
@@ -27,8 +32,8 @@ export function LogTable({
   return (
     <table className="w-full border-collapse">
       <thead>
-        <tr className="bg-slate-50">
-          <th className={`w-[190px] ${TH}`}>Timestamp</th>
+        <tr className="border-b-2 border-slate-200 bg-slate-100">
+          <th className={`w-[150px] ${TH}`}>Timestamp</th>
           <th className={`w-[140px] ${TH}`}>Actor</th>
           <th className={`w-[110px] ${TH}`}>Action</th>
           <th className={`w-[200px] ${TH}`}>Entity</th>
@@ -40,24 +45,38 @@ export function LogTable({
         {logs.map((log) => (
           <tr
             key={log.id}
-            className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50"
+            className="border-b border-slate-100 transition-colors last:border-b-0 hover:bg-sky-50/70"
           >
-            <td className="whitespace-nowrap px-4 py-3 align-middle font-mono text-xs text-slate-500">
-              {formatTimestamp(log.created_at)}
+            <td className="whitespace-nowrap px-4 py-3 align-middle">
+              <div className="font-mono text-xs font-medium text-slate-700">
+                {formatDatePart(log.created_at)}
+              </div>
+              <div className="font-mono text-xs text-slate-400">
+                {formatTimePart(log.created_at)}
+              </div>
             </td>
             <td className="px-4 py-3 align-middle">
               <div className="flex flex-col gap-1">
-                <span className="text-sm font-medium text-slate-900">
-                  {formatActor(log.user_id)}
+                <span
+                  className={`text-sm ${
+                    isActorUnknown(log.user_id, log.actor_type)
+                      ? 'italic text-slate-400'
+                      : 'font-medium text-slate-900'
+                  }`}
+                >
+                  {formatActor(log.user_id, log.actor_type)}
                 </span>
-                <ActorBadge actorType={log.actor_type} />
+                <ActorBadge
+                  actorType={log.actor_type}
+                  unknown={isActorUnknown(log.user_id, log.actor_type)}
+                />
               </div>
             </td>
             <td className="px-4 py-3 align-middle">
               <ActionBadge action={log.action} />
             </td>
             <td className="px-4 py-3 align-middle">
-              <span className="inline-flex items-center rounded border border-slate-200 bg-slate-50 px-2 py-0.5 font-mono text-xs text-slate-600">
+              <span className="inline-flex w-fit items-center rounded border border-slate-200 bg-white px-2 py-0.5 font-mono text-xs text-slate-700">
                 {log.entity}
               </span>
             </td>
@@ -71,9 +90,10 @@ export function LogTable({
                 type="button"
                 onClick={() => onViewDetails(log)}
                 aria-label="ดูรายละเอียด"
-                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                title="ดูรายละเอียด"
+                className="inline-flex items-center justify-center rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-900 hover:text-white"
               >
-                <Braces className="h-3.5 w-3.5" />
+                <Eye className="h-4 w-4" />
               </button>
             </td>
           </tr>
