@@ -1,17 +1,8 @@
-import { exportTraceState } from "next/dist/trace";
-
-export const ACTIVITY_ENTITIES = [
-    'credit',
-    'payment',
-    'invoice',
-    'saving_contract',
-    'saving_contract_request',
-    'customer',
-    'product',
-    'receipt',
-    'bank_account',
-    'user',
-] as const;
+import type {
+    ACTIVITY_ENTITIES,
+    ACTIVITY_ACTIONS,
+    ACTOR_TYPES,
+} from './constants';
 
 export type ActivityEntity = (typeof ACTIVITY_ENTITIES)[number];
 
@@ -30,3 +21,15 @@ export type ActivityLog = {
     description: string;
     created_at: string;
 }
+
+export type ActivityLogFilters = {
+    search: string;
+    action: ActivityAction | '';
+    entity: ActivityEntity | '';
+};
+
+export const EMPTY_FILTERS: ActivityLogFilters = {
+    search: '',
+    action: '',
+    entity: '',
+};

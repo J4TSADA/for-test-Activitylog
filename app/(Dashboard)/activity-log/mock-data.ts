@@ -20,8 +20,8 @@ export const mockLogs: ActivityLog[] = [
         action: 'created',
         entity_id: 'fb07088d-f6ec-4728-a39a-2c9ab2ef179b',
         actor_type: 'USER',
-        user_id: 'null',
-        metadata: '{"qtRef": "QT7", "periods": 4, "netAmount": 150"}',
+        user_id: null,
+        metadata: '{"qtRef": "QT7", "periods": 4, "netAmount": 150}',
         description: 
             'saving_contract fb07088d-f6ec-4728-a39a-2c9ab2ef179b was created',
         created_at:
@@ -33,7 +33,7 @@ export const mockLogs: ActivityLog[] = [
         action: 'updated',
         entity_id: '87e4111f-2f29-476b-8aa2-a0c3aaab89b1',
         actor_type: 'WEBHOOK',
-        user_id: 'null',
+        user_id: null,
         metadata: '{"amount": "2714.00", "statusTo": "PAID", "statusFrom": "VERIFYING"}',
         description:
             'invoice 87e4111f-2f29-476b-8aa2-a0c3aaab89b1 was updated',
